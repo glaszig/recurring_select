@@ -3,3 +3,4 @@ gemspec
 
 gem "thin"
 gem "rails", "~> 7.1.1"
+gem "uglifier"
