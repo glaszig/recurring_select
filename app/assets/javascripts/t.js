@@ -33,7 +33,10 @@
     return key
     .split('.')
     .reduce(
-      (out, part) => (out instanceof Map ? out.get(part) : out[part]) ?? false,
+      (out, part) => {
+        const result = out instanceof Map ? out.get(part) : out[part]
+        return (result == null || result === undefined) ? false : result
+      },
       vars
     );
   }
@@ -66,7 +69,7 @@
         // process array/obj iteration
         if (meta == '@') {
           return Array.from(
-            !!val?.[Symbol.iterator] ? val.entries() : Object.entries(val),
+            val.entries ? val.entries() : Object.entries(val),
             ([_key, _val]) => render(
               inner,
               {
