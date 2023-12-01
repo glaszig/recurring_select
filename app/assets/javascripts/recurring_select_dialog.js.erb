@@ -3,6 +3,14 @@
 //= require t
 //= require template
 
+const defaultState = {
+  interval: 1,
+  until: null,
+  count: null,
+  validations: {},
+  rule_type: "IceCube::DailyRule"
+}
+
 class RecurringSelectDialog {
   constructor(recurring_selector) {
     this.config = this.constructor.config
@@ -22,11 +30,9 @@ class RecurringSelectDialog {
     this.weekOfMonthChanged = this.weekOfMonthChanged.bind(this);
     this.recurring_selector = recurring_selector;
     this.current_rule = this.recurring_selector.recurring_select('current_rule');
-    this.current_rule.hash = this.current_rule.hash || {}
+    this.current_rule.hash = this.current_rule.hash || defaultState
+
     this.initDialogBox();
-    if ((this.current_rule.hash == null) || (this.current_rule.hash.rule_type == null)) {
-      this.freqChanged();
-    }
   }
 
   initDialogBox() {
@@ -44,8 +50,8 @@ class RecurringSelectDialog {
     this.content = this.outer_holder.querySelector(".rs_dialog_content");
 
     this.mainEventInit();
-    this.freqInit();
     this.summaryInit();
+    this.freqInit();
     trigger(this.outer_holder, "recurring_select:dialog_opened");
     this.freq_select.focus();
   }
@@ -99,6 +105,8 @@ class RecurringSelectDialog {
     interval_input.value = this.current_rule.hash.interval
     on(interval_input, "change keyup", this.intervalChanged);
     section.style.display = 'block'
+
+    interval_input.dispatchEvent(new Event("keyup"))
   }
 
   initWeeklyOptions() {
@@ -275,13 +283,8 @@ class RecurringSelectDialog {
 // ========================= Change callbacks ===============================
 
   freqChanged() {
-    if (isPlainObject(this.current_rule.hash)) { this.current_rule.hash = null; } // for custom values
+    this.resetState()
 
-    if (!this.current_rule.hash) { this.current_rule.hash = {} };
-    this.current_rule.hash.interval = 1;
-    this.current_rule.hash.until = null;
-    this.current_rule.hash.count = null;
-    this.current_rule.hash.validations = null;
     this.content.querySelectorAll(".freq_option_section").forEach(el => el.style.display = 'none')
     this.content.querySelector("input[type=radio], input[type=checkbox]").checked = false
 
@@ -342,7 +345,8 @@ class RecurringSelectDialog {
   }
 
   resetState() {
-    this.current_rule.hash.validations = {}
+    const state = this.current_rule.hash
+    this.current_rule.hash = { ...state, ...defaultState }
     this.current_rule.str = null
   }
 
