@@ -52,7 +52,7 @@ class RecurringSelectDialog {
     this.mainEventInit();
     this.summaryInit();
     this.freqInit();
-    trigger(this.outer_holder, "recurring_select:dialog_opened");
+    this.outer_holder.dispatchEvent(new CustomEvent("recurring_select:dialog_opened"))
     this.freq_select.focus();
   }
 
@@ -209,7 +209,7 @@ class RecurringSelectDialog {
   summaryFetchSuccess(data) {
     this.current_rule.str = data
     this.summaryUpdate()
-    css(this.content, { width: "auto" })
+    this.content.style.width = "auto"
   }
 
   init_calendar_days(section) {

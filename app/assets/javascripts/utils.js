@@ -1,13 +1,3 @@
-function css(el, styles) {
-  for (let rule in styles) {
-    el.style[rule] = styles[rule]
-  }
-}
-
-function trigger(el, eventName) {
-  el.dispatchEvent(new CustomEvent(eventName))
-}
-
 function isPlainObject(obj) {
   return obj && obj.toString() === "[object Object]"
 }
