@@ -79,23 +79,18 @@ class RecurringSelectDialog {
   }
 
   freqInit() {
-    this.freq_select = this.outer_holder.querySelector(".rs_frequency");
-    const rule_type = this.current_rule.hash && this.current_rule.hash.rule_type
-    if (this.current_rule.hash != null && rule_type != null) {
-      if (rule_type.search(/Weekly/) !== -1) {
-        this.freq_select.selectedIndex = 1
-        this.initWeeklyOptions();
-      } else if (rule_type.search(/Monthly/) !== -1) {
-        this.freq_select.selectedIndex = 2
-        this.initMonthlyOptions();
-      } else if (rule_type.search(/Yearly/) !== -1) {
-        this.freq_select.selectedIndex = 3
-        this.initYearlyOptions();
-      } else {
-        this.initDailyOptions();
-      }
-    }
-    on(this.freq_select, "change", this.freqChanged);
+    this.freq_select = this.outer_holder.querySelector(".rs_frequency")
+    on(this.freq_select, "change", this.freqChanged)
+
+    const rule_type = this.current_rule.hash.rule_type
+    const types = [ "Daily", "Weekly", "Monthly", "Yearly" ]
+
+    types.forEach((t, i) => {
+      if (!rule_type || !rule_type.includes(t)) return
+
+      this.freq_select.selectedIndex = i
+      this[`init${t}Options`]();
+    })
   }
 
   initDailyOptions() {
