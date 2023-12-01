@@ -7,9 +7,9 @@ const defaultState = {
   interval: 1,
   until: null,
   count: null,
-  validations: { day_of_month: [], day_of_week: {} },
-  rule_type: "IceCube::DailyRule"
+  validations: { day: [], day_of_month: [], day_of_week: {} }
 }
+const inittialState = { ...defaultState, rule_type: "IceCube::DailyRule" }
 
 class RecurringSelectDialog {
   constructor(recurring_selector) {
@@ -30,7 +30,7 @@ class RecurringSelectDialog {
     this.weekOfMonthChanged = this.weekOfMonthChanged.bind(this);
     this.recurring_selector = recurring_selector;
     this.current_rule = this.recurring_selector.recurring_select('current_rule');
-    this.current_rule.hash = this.current_rule.hash || defaultState
+    this.current_rule.hash = this.current_rule.hash || inittialState
 
     this.initDialogBox();
   }
