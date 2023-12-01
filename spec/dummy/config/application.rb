@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require_relative "boot"
 
 require "rails"
 require "active_model/railtie"
@@ -6,8 +6,9 @@ require "action_controller/railtie"
 require "action_view/railtie"
 require "sprockets/railtie"
 
-Bundler.require(*Rails.groups(:assets => %w(development test)))
-require "recurring_select"
+# Require the gems listed in Gemfile, including any gems
+# you've limited to :test, :development, or :production.
+Bundler.require(*Rails.groups)
 
 module Dummy
   class Application < Rails::Application
@@ -38,14 +39,6 @@ module Dummy
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
-
-    # Enable the asset pipeline
-    config.assets.enabled = true
-
-    # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
-
-    config.assets.js_compressor = Uglifier.new(harmony: true)
   end
 end
 
