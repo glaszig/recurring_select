@@ -123,7 +123,7 @@ class RecurringSelectDialog {
     )
 
     // connect the day fields
-    if ((this.current_rule.hash.validations != null) && (this.current_rule.hash.validations.day != null)) {
+    if (this.current_rule.hash.validations.day) {
       Array.from(this.current_rule.hash.validations.day).forEach((val) =>
         section.querySelector(".day_holder a[data-value='"+val+"']").classList.add("selected")
       )
