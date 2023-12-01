@@ -1,18 +1,17 @@
 //= require recurring_select_dialog
 //= require_self
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.addEventListener("focusin", (e) => {
-    if (e.target.matches(".recurring_select")) {
-      recurring_select.call(e.target, "set_initial_values")
-    }
-  })
 
-  document.addEventListener("input", (e) => {
-    if (e.target.matches(".recurring_select")) {
-      recurring_select.call(e.target, "changed")
-    }
-  })
+document.addEventListener("focusin", (e) => {
+  if (e.target.matches(".recurring_select")) {
+    recurring_select.call(e.target, "set_initial_values")
+  }
+})
+
+document.addEventListener("input", (e) => {
+  if (e.target.matches(".recurring_select")) {
+    recurring_select.call(e.target, "changed")
+  }
 })
 
 const methods = {
