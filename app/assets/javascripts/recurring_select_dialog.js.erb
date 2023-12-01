@@ -7,7 +7,7 @@ const defaultState = {
   interval: 1,
   until: null,
   count: null,
-  validations: {},
+  validations: { day_of_month: [], day_of_week: {} },
   rule_type: "IceCube::DailyRule"
 }
 
@@ -141,9 +141,6 @@ class RecurringSelectDialog {
     interval_input.value = this.current_rule.hash.interval
     on(interval_input, "change keyup", this.intervalChanged)
 
-    if (!this.current_rule.hash.validations) { this.current_rule.hash.validations = {} };
-    if (!this.current_rule.hash.validations.day_of_month) { this.current_rule.hash.validations.day_of_month = [] };
-    if (!this.current_rule.hash.validations.day_of_week) { this.current_rule.hash.validations.day_of_week = {} };
     this.init_calendar_days(section);
     this.init_calendar_weeks(section);
 
@@ -324,7 +321,6 @@ class RecurringSelectDialog {
       .map(el => {
         return el.innerText === this.config.texts["last_day"] ? -1 : parseInt(el.innerText)
       })
-    this.current_rule.hash.validations.day_of_week = {};
     this.current_rule.hash.validations.day_of_month = raw_days;
     this.summaryUpdate();
     return false;
@@ -334,8 +330,6 @@ class RecurringSelectDialog {
     event.target.classList.toggle("selected");
     this.resetState()
 
-    this.current_rule.hash.validations.day_of_month = [];
-    this.current_rule.hash.validations.day_of_week = {};
     this.content.querySelectorAll(".monthly_options .rs_calendar_week a.selected")
       .forEach((elm, index) => {
         const day = parseInt(elm.getAttribute("day"));
@@ -349,7 +343,7 @@ class RecurringSelectDialog {
 
   resetState() {
     const state = this.current_rule.hash
-    this.current_rule.hash = { ...state, ...defaultState }
+    this.current_rule.hash = { ...state, ...defaultState, week_start: this.config.texts["first_day_of_week"] }
     this.current_rule.str = null
   }
 
