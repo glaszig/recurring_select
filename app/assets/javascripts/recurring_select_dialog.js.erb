@@ -288,27 +288,12 @@ class RecurringSelectDialog {
     this.current_rule.hash.validations = null;
     this.content.querySelectorAll(".freq_option_section").forEach(el => el.style.display = 'none')
     this.content.querySelector("input[type=radio], input[type=checkbox]").checked = false
-    switch (this.freq_select.value) {
-      case "Weekly":
-        this.current_rule.hash.rule_type = "IceCube::WeeklyRule";
-        this.current_rule.str = this.config.texts["weekly"];
-        this.initWeeklyOptions();
-        break
-      case "Monthly":
-        this.current_rule.hash.rule_type = "IceCube::MonthlyRule";
-        this.current_rule.str = this.config.texts["monthly"];
-        this.initMonthlyOptions();
-        break
-      case "Yearly":
-        this.current_rule.hash.rule_type = "IceCube::YearlyRule";
-        this.current_rule.str = this.config.texts["yearly"];
-        this.initYearlyOptions();
-        break
-      default:
-        this.current_rule.hash.rule_type = "IceCube::DailyRule";
-        this.current_rule.str = this.config.texts["daily"];
-        this.initDailyOptions();
-    };
+
+    const frequency = this.freq_select.value || "Daily"
+    this.current_rule.hash.rule_type = `IceCube::${frequency}Rule`
+    this.current_rule.str = this.config.texts[frequency.toLowerCase()]
+    this[`init${frequency}Options`]()
+
     this.summaryUpdate();
   }
 
