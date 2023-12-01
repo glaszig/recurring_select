@@ -22,6 +22,7 @@ class RecurringSelectDialog {
     this.weekOfMonthChanged = this.weekOfMonthChanged.bind(this);
     this.recurring_selector = recurring_selector;
     this.current_rule = this.recurring_selector.recurring_select('current_rule');
+    this.current_rule.hash = this.current_rule.hash || {}
     this.initDialogBox();
     if ((this.current_rule.hash == null) || (this.current_rule.hash.rule_type == null)) {
       this.freqChanged();
@@ -298,20 +299,20 @@ class RecurringSelectDialog {
   }
 
   intervalChanged(event) {
-    this.current_rule.str = null;
-    if (!this.current_rule.hash) { this.current_rule.hash = {} };
+    this.resetState()
+
     this.current_rule.hash.interval = parseInt(event.currentTarget.value);
     if ((this.current_rule.hash.interval < 1) || isNaN(this.current_rule.hash.interval)) {
       this.current_rule.hash.interval = 1;
     }
+
     this.summaryUpdate();
   }
 
   daysChanged(event) {
     event.target.classList.toggle("selected");
-    this.current_rule.str = null;
-    if (!this.current_rule.hash) { this.current_rule.hash = {} };
-    this.current_rule.hash.validations = {};
+    this.resetState()
+
     const raw_days = Array.from(this.content.querySelectorAll(".day_holder a.selected"))
       .map(el => parseInt(el.dataset.value))
     this.current_rule.hash.validations.day = raw_days
@@ -321,9 +322,8 @@ class RecurringSelectDialog {
 
   dateOfMonthChanged(event) {
     event.target.classList.toggle("selected");
-    this.current_rule.str = null;
-    if (!this.current_rule.hash) { this.current_rule.hash = {} };
-    this.current_rule.hash.validations = {};
+    this.resetState()
+
     const raw_days = Array.from(this.content.querySelectorAll(".monthly_options .rs_calendar_day a.selected"))
       .map(el => {
         return el.innerText === this.config.texts["last_day"] ? -1 : parseInt(el.innerText)
@@ -336,9 +336,8 @@ class RecurringSelectDialog {
 
   weekOfMonthChanged(event) {
     event.target.classList.toggle("selected");
-    this.current_rule.str = null;
-    if (!this.current_rule.hash) { this.current_rule.hash = {} };
-    this.current_rule.hash.validations = {};
+    this.resetState()
+
     this.current_rule.hash.validations.day_of_month = [];
     this.current_rule.hash.validations.day_of_week = {};
     this.content.querySelectorAll(".monthly_options .rs_calendar_week a.selected")
@@ -350,6 +349,11 @@ class RecurringSelectDialog {
       })
     this.summaryUpdate();
     return false;
+  }
+
+  resetState() {
+    this.current_rule.hash.validations = {}
+    this.current_rule.str = null
   }
 
 // ========================= Change callbacks ===============================
