@@ -101,16 +101,20 @@ class RecurringSelectDialog {
 
   initDailyOptions() {
     const section = this.content.querySelector('.daily_options')
+    section.style.display = "block"
+
     const interval_input = section.querySelector('.rs_daily_interval')
     interval_input.value = this.current_rule.hash.interval
     on(interval_input, "change keyup", this.intervalChanged);
-    section.style.display = 'block'
 
     interval_input.dispatchEvent(new Event("keyup"))
   }
 
   initWeeklyOptions() {
     const section = this.content.querySelector('.weekly_options');
+    section.style.display = "block"
+    off(section, "click")
+    on(section, "click", ".day_holder a", this.daysChanged)
 
     // connect the interval field
     const interval_input = section.querySelector('.rs_weekly_interval');
@@ -129,14 +133,12 @@ class RecurringSelectDialog {
       )
     }
 
-    off(section, "click")
-    on(section, "click", ".day_holder a", this.daysChanged)
-
-    section.style.display = 'block'
   }
 
   initMonthlyOptions() {
     const section = this.content.querySelector('.monthly_options')
+    section.style.display = "block"
+
     const interval_input = section.querySelector('.rs_monthly_interval')
     interval_input.value = this.current_rule.hash.interval
     on(interval_input, "change keyup", this.intervalChanged)
@@ -148,16 +150,17 @@ class RecurringSelectDialog {
     section.querySelector(".monthly_rule_type_week").checked = in_week_mode
     section.querySelector(".monthly_rule_type_day").checked = !in_week_mode;
     this.toggle_month_view();
-    section.querySelectorAll("input[name=monthly_rule_type]").forEach((el) => on(el, "change", this.toggle_month_view))
-    section.style.display = 'block'
+
+    on(section, "change", "input[name=monthly_rule_type]", this.toggle_month_view)
   }
 
   initYearlyOptions() {
     const section = this.content.querySelector('.yearly_options');
+    section.style.display = 'block'
+
     const interval_input = section.querySelector('.rs_yearly_interval');
     interval_input.value = this.current_rule.hash.interval
     on(interval_input, "change keyup", this.intervalChanged)
-    section.style.display = 'block'
   }
 
 
