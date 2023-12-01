@@ -346,7 +346,9 @@ class RecurringSelectDialog {
 
   resetState() {
     const state = this.current_rule.hash
+    const validations = { ...state.validations, ...defaultState.validations }
     this.current_rule.hash = { ...state, ...defaultState, week_start: this.config.texts["first_day_of_week"] }
+    this.current_rule.hash.validations = validations
     this.current_rule.str = null
   }
 
