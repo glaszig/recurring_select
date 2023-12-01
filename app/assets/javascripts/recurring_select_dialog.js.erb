@@ -300,12 +300,7 @@ class RecurringSelectDialog {
 
   intervalChanged(event) {
     this.resetState()
-
-    this.current_rule.hash.interval = parseInt(event.currentTarget.value);
-    if ((this.current_rule.hash.interval < 1) || isNaN(this.current_rule.hash.interval)) {
-      this.current_rule.hash.interval = 1;
-    }
-
+    this.current_rule.hash.interval = Math.max(1, parseInt(event.currentTarget.value))
     this.summaryUpdate();
   }
 
