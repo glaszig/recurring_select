@@ -188,7 +188,7 @@ class RecurringSelectDialog {
   }
 
   summaryFetch() {
-    const url = `<%= Rails.application.config.action_controller.relative_url_root %>/recurring_select/translate/${this.config.texts["locale_iso_code"]}`
+    const url = `${i18nBaseUrl}/${this.config.texts["locale_iso_code"]}`
     const headers = { 'X-Requested-With' : 'XMLHttpRequest', 'Content-Type' : 'application/x-www-form-urlencoded' }
     const body = serialize(this.current_rule.hash)
 
