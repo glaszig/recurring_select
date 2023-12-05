@@ -249,14 +249,14 @@ class RecurringSelectDialog {
         const el = document.createElement("span")
         el.innerText = row_labels[index]
         monthly_calendar.appendChild(el);
-        for (let i = this.config.texts["first_day_of_week"], day_of_week = i, end = 7 + this.config.texts["first_day_of_week"], asc = this.config.texts["first_day_of_week"] <= end; asc ? i < end : i > end; asc ? i++ : i--, day_of_week = i) {
-          day_of_week = day_of_week % 7;
+
+        this.eachWeekday(day => {
           const day_link = document.createElement("a")
-          day_link.innerText = cell_str[day_of_week]
-          day_link.setAttribute("day", day_of_week);
+          day_link.innerText = cell_str[day]
+          day_link.setAttribute("day", day);
           day_link.setAttribute("instance", num);
           monthly_calendar.appendChild(day_link);
-        };
+        })
       }
     };
 
@@ -367,15 +367,21 @@ class RecurringSelectDialog {
 
 // ========================= Change callbacks ===============================
 
-  template() {
-    let weekdays = []
+  eachWeekday(cb) {
     for (let i = this.config.texts["first_day_of_week"], day_of_week = i, end = 7 + this.config.texts["first_day_of_week"], asc = this.config.texts["first_day_of_week"] <= end; asc ? i < end : i > end; asc ? i++ : i--, day_of_week = i) {
-      day_of_week = day_of_week % 7;
-      weekdays.push({
-        value: day_of_week,
-        label: this.config.texts["days_first_letter"][day_of_week]
-      })
+      cb(day_of_week % 7)
     }
+  }
+
+  template() {
+    const weekdays = []
+
+    this.eachWeekday(day => {
+      weekdays.push({
+        value: day,
+        label: this.config.texts["days_first_letter"][day]
+      })
+    })
 
     return this.dialogTemplate.render({...this.config.texts, weekdays })
   }
