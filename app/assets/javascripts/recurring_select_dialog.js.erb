@@ -172,18 +172,18 @@ class RecurringSelectDialog {
 // ========================= render methods ===============================
 
   summaryUpdate(new_string) {
+    this.summaryFetch()
     if (this.current_rule.str) {
       let rule_str = this.current_rule.str.replace("*", "");
-      if (rule_str.length < 20) {
-        rule_str = `${this.config.texts["summary"]}: `+rule_str;
-      }
       this.showSummary(rule_str)
     } else {
-      this.summaryFetch();
     }
   }
 
   showSummary(text) {
+    if (text.length < 20) {
+      text = `${this.config.texts["summary"]}: ${text}`;
+    }
     this.summary.querySelector("span").textContent = text
   }
 
@@ -208,8 +208,7 @@ class RecurringSelectDialog {
 
   summaryFetchSuccess(data) {
     this.current_rule.str = data
-    this.summaryUpdate()
-    this.content.style.width = "auto"
+    this.showSummary(data)
   }
 
   init_calendar_days(section) {
