@@ -271,13 +271,18 @@ class RecurringSelectDialog {
   }
 
   toggle_month_view() {
+    const day_calendar = this.content.querySelector(".rs_calendar_day")
+    const week_calendar = this.content.querySelector(".rs_calendar_week")
     const week_mode = this.content.querySelector(".monthly_rule_type_week").checked
+
     if (week_mode) {
-      this.content.querySelector(".rs_calendar_week").style.display = "block"
-      this.content.querySelector(".rs_calendar_day").style.display = "none"
+      week_calendar.style.display = "block"
+      day_calendar.style.display = "none"
+      this.restoreWeekOfMonthState()
     } else {
-      this.content.querySelector(".rs_calendar_week").style.display = "none"
-      this.content.querySelector(".rs_calendar_day").style.display = "block"
+      week_calendar.style.display = "none"
+      day_calendar.style.display = "block"
+      this.restoreDateOfMonthState()
     }
   }
 
@@ -315,31 +320,41 @@ class RecurringSelectDialog {
   }
 
   dateOfMonthChanged(event) {
-    event.target.classList.toggle("selected");
-    this.resetState()
+    event.target.classList.toggle("selected")
+    this.restoreDateOfMonthState()
 
-    const raw_days = Array.from(this.content.querySelectorAll(".monthly_options .rs_calendar_day a.selected"))
-      .map(el => {
-        return el.innerText === this.config.texts["last_day"] ? -1 : parseInt(el.innerText)
-      })
-    this.current_rule.hash.validations.day_of_month = raw_days;
-    this.summaryUpdate();
-    return false;
+    return false
+  }
+
+  restoreDateOfMonthState() {
+    const days = this.content.querySelectorAll(".monthly_options .rs_calendar_day a.selected")
+    const state = Array.from(days).map(el => {
+      return el.innerText === this.config.texts["last_day"] ? -1 : parseInt(el.innerText)
+    })
+    this.current_rule.hash.validations = { ...defaultState.validations, day_of_month: state }
+    this.summaryUpdate()
   }
 
   weekOfMonthChanged(event) {
-    event.target.classList.toggle("selected");
-    this.resetState()
+    event.target.classList.toggle("selected")
+    this.restoreWeekOfMonthState()
 
-    this.content.querySelectorAll(".monthly_options .rs_calendar_week a.selected")
-      .forEach((elm, index) => {
-        const day = parseInt(elm.getAttribute("day"));
-        const instance = parseInt(elm.getAttribute("instance"));
-        if (!this.current_rule.hash.validations.day_of_week[day]) { this.current_rule.hash.validations.day_of_week[day] = [] };
-        return this.current_rule.hash.validations.day_of_week[day].push(instance);
-      })
-    this.summaryUpdate();
-    return false;
+    return false
+  }
+
+  restoreWeekOfMonthState() {
+    const weekdays = this.content.querySelectorAll(".monthly_options .rs_calendar_week a.selected")
+    const state = Array.from(weekdays).reduce((state, el) => {
+        const day = parseInt(el.getAttribute("day"));
+        const instance = parseInt(el.getAttribute("instance"));
+
+        state[day] = state[day] || []
+        state[day].includes(instance) || state[day].push(instance)
+
+        return state
+    }, {})
+    this.current_rule.hash.validations = { ...defaultState.validations, day_of_week: state }
+    this.summaryUpdate()
   }
 
   resetState() {
